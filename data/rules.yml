@@ -1,0 +1,40 @@
+version: "3.0"
+
+rules:
+
+- rule: Say goodbye anytime the user says goodbye
+  steps:
+  - intent: goodbye
+  - action: utter_goodbye
+
+- rule: Say 'I am a bot' anytime the user challenges
+  steps:
+  - intent: bot_challenge
+  - action: utter_iamabot
+
+- rule: Say what the bot can do when the user asks so
+  steps:
+    - intent: what_can_bot_do
+    - action: utter_bot_task
+
+- rule: Activate Film Rental Form
+  steps:
+    - intent: rent_film
+    - action: film_rental_form
+    - active_loop: film_rental_form
+
+- rule: Set recommended genre as preferred
+  condition:
+    - slot_was_set:
+        - recommended_genre
+  steps:
+    - intent: affirm
+    - action: action_set_preferred_genre
+
+- rule: Add recommended genre to avoided
+  condition:
+    - slot_was_set:
+        - recommended_genre
+  steps:
+    - intent: deny
+    - action: action_add_avoided_genre

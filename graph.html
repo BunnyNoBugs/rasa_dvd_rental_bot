@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Rasa Core Visualisation</title>
+    <script src="https://dagrejs.github.io/project/dagre-d3/latest/dagre-d3.min.js"></script>
+    <script src="https://dagrejs.github.io/project/dagre/latest/dagre.min.js"></script>
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="https://dagrejs.github.io/project/graphlib-dot/v0.6.3/graphlib-dot.js"></script>
+</head>
+<body>
+<div id="errormsg" style="color: #b00"></div>
+<svg>
+    <style id="graph-style">
+        .node.invisible > rect {
+            display: none;
+        }
+
+        .node.start > rect {
+            fill: #7f7;
+            rx: 30;
+            ry: 18;
+        }
+
+        .node.end > rect {
+            fill: #f77;
+            rx: 30;
+            ry: 18;
+        }
+
+        .node:not(.active) > rect, .node:not(.active) > .label {
+            opacity: 0.4;
+        }
+
+        .edgePath:not(.active) path {
+            opacity: 0.4;
+        }
+
+        .node.ellipsis > rect {
+            fill: #CCC;
+        }
+
+        .node.intent > rect {
+            fill: #7ff;
+        }
+
+        .node.dashed > rect {
+            stroke-dasharray: 5;
+        }
+
+        text {
+            font-weight: 300;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serf, serif;
+            font-size: 14px;
+            color: #1f1d1d;
+        }
+
+        .node rect {
+            stroke: #444;
+            fill: #fff;
+            stroke-width: 1.5px;
+        }
+
+        .edgePath path {
+            stroke: #333;
+            stroke-width: 1.5px;
+        }
+
+        svg {
+            position: fixed;
+            top: 10px;
+            left: 0;
+            height: 100%;
+            width: 100%
+        }
+    </style>
+    <g></g>
+</svg>
+<script>
+
+  function serveGraph() {
+    let oldInputGraphValue;
+
+    const url = 'visualization.dot';
+    const refreshInterval = 500;
+
+    // trigger a refresh by fetching an updated graph
+    setInterval(function () {
+      fetch(url).then(r => r.text()).then(dot => {
+        document.getElementById('errormsg').innerHTML = '';
+        if (oldInputGraphValue === dot) return;
+
+        oldInputGraphValue = dot;
+        drawGraph(dot);
+      }).catch(err => {
+        document.getElementById('errormsg').innerHTML =
+          'Failed to update plot. (' + err.message + ')';
+      });
+    }, refreshInterval);
+  }
+
+  function drawGraph(graph) {
+    let g = graphlibDot.read(graph);
+    // Set margins, if not present
+    if (!g.graph().hasOwnProperty("marginx") &&
+      !g.graph().hasOwnProperty("marginy")) {
+      g.graph().marginx = 20;
+      g.graph().marginy = 20;
+    }
+    g.graph().transition = function (selection) {
+      return selection.transition().duration(300);
+    };
+    // Render the graph into svg g
+    d3.select("svg g").call(render, g);
+  }
+  // Set up zoom support
+  const svg = d3.select("svg"),
+    inner = d3.select("svg g"),
+    zoom = d3.zoom().on("zoom", function () {
+      inner.attr("transform", d3.event.transform);
+    });
+  svg.call(zoom);
+
+  // Create and configure the renderer
+  const render = dagreD3.render();
+
+  let isClient = false;
+  isClient = true;
+
+  if (isClient) {
+    // Mark all nodes and their edges as active
+    cssRules = document.getElementById('graph-style').sheet.cssRules;
+    cssRules[3].style.opacity = 1;
+    cssRules[4].style.opacity = 1;
+
+    let graph;
+    graph = `digraph  {
+0 [class="start active", fillcolor=green, fontsize=12, label=START, style=filled];
+"-1" [class=end, fillcolor=red, fontsize=12, label=END, style=filled];
+1 [class="", fontsize=12, label=utter_greet];
+2 [class="", fontsize=12, label=film_rental_form];
+3 [class="", fontsize=12, label=utter_film_slots];
+4 [class="", fontsize=12, label=utter_submit];
+5 [class="", fontsize=12, label=utter_goodbye];
+6 [class="", fontsize=12, label=utter_want_to_chat];
+7 [class="", fontsize=12, label=action_recommend_genre];
+8 [class="", fontsize=12, label=action_set_preferred_genre];
+10 [class="", fontsize=12, label=utter_ask_current_mood];
+27 [class="", fontsize=12, label=action_add_avoided_genre];
+45 [class="", fontsize=12, label=utter_happy];
+47 [class="", fontsize=12, label=utter_cheer_up];
+48 [class="", fontsize=12, label=utter_did_that_help];
+54 [class="", fontsize=12, label="..."];
+57 [class="", fontsize=12, label=utter_iamabot];
+59 [class="", fontsize=12, label=utter_bot_task];
+61 [class="", fontsize=12, label=film_rental_form];
+66 [class=intent, fillcolor=lightblue, label="let's go", shape=rect, style=filled];
+67 [class=intent, fillcolor=lightblue, label="I would like to chat", shape=rect, style=filled];
+68 [class=intent, fillcolor=lightblue, label="rent a film", shape=rect, style=filled];
+69 [class=intent, fillcolor=lightblue, label=wonderful, shape=rect, style=filled];
+70 [class=intent, fillcolor=lightblue, label=sad, shape=rect, style=filled];
+71 [class=intent, fillcolor=lightblue, label="have a nice day", shape=rect, style=filled];
+72 [class=intent, fillcolor=lightblue, label=indeed, shape=rect, style=filled];
+73 [class=intent, fillcolor=lightblue, label="don't like that", shape=rect, style=filled];
+74 [class=intent, fillcolor=lightblue, label="feeling like a king", shape=rect, style=filled];
+75 [class=intent, fillcolor=lightblue, label=sad, shape=rect, style=filled];
+76 [class=intent, fillcolor=lightblue, label=bored, shape=rect, style=filled];
+77 [class=intent, fillcolor=lightblue, label="I miss my loved one so much", shape=rect, style=filled];
+78 [class=intent, fillcolor=lightblue, label=yes, shape=rect, style=filled];
+79 [class=intent, fillcolor=lightblue, label=never, shape=rect, style=filled];
+80 [class=intent, fillcolor=lightblue, label="see you later", shape=rect, style=filled];
+81 [class=intent, fillcolor=lightblue, label="am I talking to a bot?", shape=rect, style=filled];
+82 [class=intent, fillcolor=lightblue, label="What are you made for?", shape=rect, style=filled];
+83 [class=intent, fillcolor=lightblue, label="id like to borrow a movie", shape=rect, style=filled];
+84 [class=intent, fillcolor=lightblue, label=y, shape=rect, style=filled];
+85 [class=intent, fillcolor=lightblue, label="don't like that", shape=rect, style=filled];
+0 -> 54  [class="", key=NONE, label=""];
+0 -> 66  [class="", key=0];
+0 -> 67  [class="", key=0];
+1 -> 68  [class="", key=0];
+1 -> 69  [class="", key=0];
+1 -> 70  [class="", key=0];
+2 -> 3  [class="", key=NONE, label=""];
+3 -> 4  [class="", key=NONE, label=""];
+4 -> 71  [class="", key=0];
+5 -> "-1"  [class="", key=NONE, label=""];
+6 -> 7  [class="", key=NONE, label=""];
+6 -> 10  [class="", key=NONE, label=""];
+7 -> 72  [class="", key=0];
+7 -> 73  [class="", key=0];
+8 -> "-1"  [class="", key=NONE, label=""];
+10 -> 74  [class="", key=0];
+10 -> 75  [class="", key=0];
+10 -> 76  [class="", key=0];
+10 -> 77  [class="", key=0];
+27 -> "-1"  [class="", key=NONE, label=""];
+45 -> "-1"  [class="", key=NONE, label=""];
+47 -> 48  [class="", key=NONE, label=""];
+48 -> 78  [class="", key=0];
+48 -> 79  [class="", key=0];
+54 -> 80  [class="", key=0];
+54 -> 81  [class="", key=0];
+54 -> 82  [class="", key=0];
+54 -> 83  [class="", key=0];
+54 -> 84  [class="", key=0];
+54 -> 85  [class="", key=0];
+57 -> "-1"  [class="", key=NONE, label=""];
+59 -> "-1"  [class="", key=NONE, label=""];
+61 -> "-1"  [class="", key=NONE, label=""];
+66 -> 1  [class="", key=0];
+67 -> 6  [class="", key=0];
+68 -> 2  [class="", key=0];
+69 -> 45  [class="", key=0];
+70 -> 47  [class="", key=0];
+71 -> 5  [class="", key=0];
+72 -> 8  [class="", key=0];
+73 -> 27  [class="", key=0];
+74 -> 7  [class="", key=0];
+75 -> 7  [class="", key=0];
+76 -> 7  [class="", key=0];
+77 -> 7  [class="", key=0];
+78 -> 45  [class="", key=0];
+79 -> 5  [class="", key=0];
+80 -> 5  [class="", key=0];
+81 -> 57  [class="", key=0];
+82 -> 59  [class="", key=0];
+83 -> 61  [class="", key=0];
+84 -> 8  [class="", key=0];
+85 -> 27  [class="", key=0];
+}
+`;
+    drawGraph(graph);
+  } else {
+    serveGraph();
+  }
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+version: "3.0"
+
+nlu:
+- intent: greet
+  examples: |
+    - hey
+    - hello
+    - hi
+    - hello there
+    - good morning
+    - good evening
+    - moin
+    - hey there
+    - let's go
+    - hey dude
+    - goodmorning
+    - goodevening
+    - good afternoon
+
+- intent: goodbye
+  examples: |
+    - cu
+    - good by
+    - cee you later
+    - good night
+    - bye
+    - goodbye
+    - have a nice day
+    - see you around
+    - bye bye
+    - see you later
+
+- intent: affirm
+  examples: |
+    - yes
+    - y
+    - indeed
+    - of course
+    - that sounds good
+    - correct
+
+- intent: deny
+  examples: |
+    - no
+    - n
+    - never
+    - I don't think so
+    - don't like that
+    - no way
+    - not really
+
+- intent: mood_great
+  examples: |
+    - perfect
+    - great
+    - amazing
+    - feeling like a king
+    - wonderful
+    - I am feeling very good
+    - I am great
+    - I am amazing
+    - I am going to save the world
+    - super stoked
+    - extremely good
+    - so so perfect
+    - so good
+    - so perfect
+
+- intent: mood_unhappy
+  examples: |
+    - my day was horrible
+    - I am sad
+    - I don't feel very well
+    - I am disappointed
+    - super sad
+    - I'm so sad
+    - sad
+    - very sad
+    - unhappy
+    - not good
+    - not very good
+    - extremly sad
+    - so saad
+    - so sad
+
+- intent: bot_challenge
+  examples: |
+    - are you a bot?
+    - are you a human?
+    - am I talking to a bot?
+    - am I talking to a human?
+
+- intent: what_can_bot_do
+  examples: |
+    - What can you do?
+    - What is your task?
+    - Tell me about yourself
+    - What are you made for?
+    
+- intent: rent_film
+  examples: |
+    - i would like to rent a film
+    - rent a film
+    - borrow a movie
+    - id like to borrow a movie
+    - i want to get a film
+
+- intent: inform
+  examples: |
+    - I would like to rent a film of genre [drama](preferred_genre)
+    - I would like to rent a film for [3](rental_period) days
+    - My favourite genre is [action](preferred_genre)
+    - My genre is [comedy](prefered_genre)
+    - I like [drama](prefered_genre) films
+    - I need a film for [4](rental_period) days
+
+- intent: chitchat
+  examples: |
+    - Let's chat
+    - I would like to chat
+    - How are you
+    - What is your favourite dish
+
+- intent: mood_lonely
+  examples: |
+    - I feel so lonely
+    - I'm so lonely
+    - I miss my loved one so much
+    - I'm alone
+
+- intent: mood_bored
+  examples: |
+    - I am bored
+    - I am so bored
+    - bored
+    - I don't know what to do

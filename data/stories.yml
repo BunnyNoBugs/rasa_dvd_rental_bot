@@ -1,0 +1,87 @@
+version: "3.0"
+
+stories:
+
+- story: happy path
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: mood_great
+  - action: utter_happy
+
+- story: sad path 1
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: mood_unhappy
+  - action: utter_cheer_up
+  - action: utter_did_that_help
+  - intent: affirm
+  - action: utter_happy
+
+- story: sad path 2
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: mood_unhappy
+  - action: utter_cheer_up
+  - action: utter_did_that_help
+  - intent: deny
+  - action: utter_goodbye
+
+- story: film_rental_story
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: rent_film
+  - action: film_rental_form
+  - active_loop: film_rental_form
+  - slot_was_set:
+    - requested_slot: preferred_genre
+  - slot_was_set:
+    - requested_slot: film_name
+  - slot_was_set:
+    - requested_slot: rental_period
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: utter_film_slots
+  - action: utter_submit
+  - intent: goodbye
+  - action: utter_goodbye
+
+- story: Genre recommendation in chitchat
+  steps:
+    - intent: chitchat
+    - action: utter_want_to_chat
+    - slot_was_set:
+        - current_mood: bored
+    - action: action_recommend_genre
+    - checkpoint: check_recommended_genre
+
+- story: Genre recommendation in chitchat when current mood is not set
+  steps:
+    - intent: chitchat
+    - action: utter_want_to_chat
+    - slot_was_set:
+        - current_mood: null
+    - action: utter_ask_current_mood
+    - or:
+        - intent: mood_great
+        - intent: mood_unhappy
+        - intent: mood_bored
+        - intent: mood_lonely
+    - action: action_recommend_genre
+    - checkpoint: check_recommended_genre
+
+- story: Handle recommendation affirm
+  steps:
+    - checkpoint: check_recommended_genre
+    - intent: affirm
+    - action: action_set_preferred_genre
+
+- story: Handle recommendation deny
+  steps:
+    - checkpoint: check_recommended_genre
+    - intent: deny
+    - action: action_add_avoided_genre

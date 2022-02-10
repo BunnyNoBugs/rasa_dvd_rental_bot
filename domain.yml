@@ -1,0 +1,134 @@
+version: "3.0"
+
+intents:
+  - greet
+  - goodbye
+  - affirm
+  - deny
+  - mood_great
+  - mood_unhappy
+  - bot_challenge
+  - what_can_bot_do
+  - rent_film
+  - inform
+  - mood_lonely
+  - mood_bored
+  - chitchat
+
+entities:
+  - preferred_genre
+  - rental_period
+  - film_name
+
+forms:
+  film_rental_form:
+    required_slots:
+      - preferred_genre
+      - film_name
+      - rental_period
+
+slots:
+  preferred_genre:
+    type: text
+    mappings:
+      - type: from_text
+        conditions:
+          - active_loop: film_rental_form
+            requested_slot: preferred_genre
+  film_name:
+    type: text
+    mappings:
+      - type: from_text
+        conditions:
+          - active_loop: film_rental_form
+            requested_slot: film_name
+  rental_period:
+    type: float
+    mappings:
+      - type: from_text
+        conditions:
+          - active_loop: film_rental_form
+            requested_slot: rental_period
+      - type: from_entity
+        entity: rental_period
+  current_mood:
+    type: categorical
+    values:
+      - great
+      - unhappy
+      - lonely
+      - bored
+    mappings:
+      - type: from_intent
+        value: great
+        intent: mood_great
+      - type: from_intent
+        value: unhappy
+        intent: mood_unhappy
+      - type: from_intent
+        value: lonely
+        intent: mood_lonely
+      - type: from_intent
+        value: bored
+        intent: mood_bored
+  recommended_genre:
+    type: text
+    mappings:
+      - type: custom
+  avoided_genres:
+    type: list
+    mappings:
+      - type: custom
+
+responses:
+  utter_greet:
+    - text: "Hey! How are you?"
+
+  utter_cheer_up:
+    - text: "Here is something to cheer you up:"
+      image: "https://i.imgur.com/nGF1K8f.jpg"
+
+  utter_did_that_help:
+    - text: "Did that help you?"
+
+  utter_happy:
+    - text: "Great, carry on!"
+
+  utter_goodbye:
+    - text: "Bye"
+
+  utter_iamabot:
+    - text: "I am a bot, powered by Rasa."
+
+  utter_bot_task:
+    - text: "I am an assistant for a DVD rental shop, I will help you rent a film"
+
+  utter_film_slots:
+    - text: "I will rent \"{film_name}\" of genre {preferred_genre} for {rental_period} days"
+
+  utter_submit:
+    - text: "Now renting a film for you..."
+
+  utter_want_to_chat:
+    - text: "Oh, so you want to chat"
+
+  utter_ask_current_mood:
+    - text: "How are you feeling today?"
+
+
+
+actions:
+  - action_ask_rental_period
+  - action_ask_preferred_genre
+  - action_ask_film_name
+  - validate_film_rental_form
+  - utter_submit
+  - utter_film_slots
+  - action_set_preferred_genre
+  - action_recommend_genre
+  - action_set_preferred_slot
+  - action_add_avoided_genre
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
