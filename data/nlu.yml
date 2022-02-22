@@ -134,3 +134,9 @@ nlu:
     - I am so bored
     - bored
     - I don't know what to do
+
+- intent: start
+  examples: |
+    - \start
+    - start
+    - /start
